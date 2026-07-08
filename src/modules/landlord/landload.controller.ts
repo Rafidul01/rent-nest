@@ -59,10 +59,26 @@ const getRentalRequests = catchAsync(async(req: Request, res: Response, next : N
     
 })
 
+const updateRentalRequest = catchAsync(async(req: Request, res: Response, next : NextFunction) => {
+    const id = req.params.id as string;
+    const landloadId = req.user?.id as string;
+    const payload = req.body;
+    const result = await landlordService.updateRentalRequestIntoDB(id, landloadId, payload);
+    
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Rental request updated successfully",
+        data: result
+    })
+    
+})
+
 
 export const landlordController = {
     createProperty,
     updateProperty,
     deleteProperty,
-    getRentalRequests
+    getRentalRequests,
+    updateRentalRequest
 }

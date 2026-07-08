@@ -9,5 +9,6 @@ route.post("/properties",auth(Role.LANDLORD), landlordController.createProperty)
 route.put("/properties/:id",auth(Role.LANDLORD), landlordController.updateProperty)
 route.delete("/properties/:id",auth(Role.LANDLORD), landlordController.deleteProperty)
 route.get("/requests", auth(Role.LANDLORD), landlordController.getRentalRequests)
+route.patch("/requests/:id", auth(Role.LANDLORD), landlordController.updateRentalRequest)
 
 export const landlordRoutes = route

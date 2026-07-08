@@ -92,9 +92,45 @@ const getRentalRequestsFromDB = async (landloadId : string) => {
     return rentalRequests
 }
 
+const updateRentalRequestIntoDB = async (id : string, landloadId : string, payload : any) => {
+
+    const {
+        status
+    } = payload
+
+    const rentalRequest = await prisma.rentalRequest.findUnique({
+        where : {
+            id
+        },
+        include : {
+            property : true
+        }
+    })
+
+    if (!rentalRequest) {
+        throw new Error("Rental request not found");
+    }
+
+    if (rentalRequest.property.landlordId !== landloadId) {
+        throw new Error("You are not authorized to update this rental request");
+    }
+
+    const updatedRentalRequest = await prisma.rentalRequest.update({
+        where : {
+            id
+        },
+        data : {
+            status
+        }
+    })
+
+    return updatedRentalRequest
+}
+
 export const landlordService = {
     createPropertyIntoDB,
     updatePropertyIntoDB,
     deletePropertyFromDB,
-    getRentalRequestsFromDB
+    getRentalRequestsFromDB,
+    updateRentalRequestIntoDB
 }
