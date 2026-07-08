@@ -46,7 +46,26 @@ const getRentalRequestsFromDB = async (tenantId: string) => {
     return rentalRequests;
 };
 
+const getSingleRentalRequestFromDB = async (id: string, tenantId: string) => {
+
+
+    const rentalRequest = await prisma.rentalRequest.findUnique({
+        where: {
+            id
+        },
+        include: {
+            property: true
+
+        }
+    });
+    if (rentalRequest?.tenantId !== tenantId) {
+        throw new Error("You are not authorized to view this rental request");
+    }
+    return rentalRequest;
+};
+
 export const rentalService = {
     createRentalRequestIntoDB,
-    getRentalRequestsFromDB
+    getRentalRequestsFromDB,
+    getSingleRentalRequestFromDB
 };
