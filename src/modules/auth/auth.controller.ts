@@ -51,9 +51,24 @@ const loginUser = catchAsync(async (req: Request, res: Response, next : NextFunc
     
 })
 
+const getCurrentUser = catchAsync(async (req: Request, res: Response, next : NextFunction) => {
+
+    const id = req.user?.id as string;
+
+    const user = await authService.getCurrentUserFormDB(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "User fetched successfully",
+        data: user
+    })
+    
+})
+
 
 
 export const authController = {
     loginUser,
-    registerUser
+    registerUser,
+    getCurrentUser
 }

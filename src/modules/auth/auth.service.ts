@@ -103,10 +103,23 @@ const loninUser = async (payload : ILoginUser) => {
     
 }
 
+const getCurrentUserFormDB = async (id : string) => {
+    const user = await prisma.user.findUnique({
+        where : {
+            id
+        },
+        omit : {
+            password : true
+        }
+    })
+    return user;
+}
+
 
 
 export const authService = {
     loninUser,
-    registerUserIntoDB
+    registerUserIntoDB,
+    getCurrentUserFormDB
     
 }

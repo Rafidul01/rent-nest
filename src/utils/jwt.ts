@@ -1,4 +1,5 @@
 
+import e from "cors";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 
 const createToken = (payload : JwtPayload, secret : string, expiresIn : SignOptions) => {
@@ -26,7 +27,8 @@ const verifyToken = (token : string, secret : string) => {
     } catch (error : any) {
         return {
             success : false,
-            message : error.message
+            message : error.message,
+            error
         }
         
     }
