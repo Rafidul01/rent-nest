@@ -7,6 +7,11 @@ model User {
     role Role @default(TENANT)
     status UserStatus @default(ACTIVE)
 
+    properties Property[] @relation("LandlordProperties")
+    rentalRequests RentalRequest[] @relation("TenantRentalRequests")
+    reviews Review[]
+    payments Payment[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     @@map("users")
