@@ -53,7 +53,34 @@ const updatePropertyIntoDB = async (id : string, landloadId : string, payload : 
     
 }
 
+const deletePropertyFromDB = async (id : string, landloadId : string) => {
+
+    const property = await prisma.property.findUnique({
+        where : {
+            id
+        }
+    })
+
+    if (!property) {
+        throw new Error("Property not found");
+    }
+
+    if (property.landlordId !== landloadId) {
+        throw new Error("You are not authorized to delete this property");
+    }
+
+    const deletedProperty = await prisma.property.delete({
+        where : {
+            id
+        }
+    })
+
+    return deletedProperty
+    
+}
+
 export const landlordService = {
     createPropertyIntoDB,
-    updatePropertyIntoDB
+    updatePropertyIntoDB,
+    deletePropertyFromDB
 }
