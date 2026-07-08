@@ -11,6 +11,8 @@ const loginUser = catchAsync(async (req: Request, res: Response, next : NextFunc
     
 })
 
+
+
 export const authController = {
-    loginUser
+    loginUser,
 }
