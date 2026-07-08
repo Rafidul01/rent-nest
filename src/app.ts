@@ -5,6 +5,8 @@ import config from "./config";
 import {authRoutes} from "./modules/auth/auth.routes";
 import { globalErrorHandler } from "./middlewares/globalErrorHandeler";
 import { userRoutes } from "./modules/user/user.routes";
+import { landlordRoutes } from "./modules/landlord/landload.route";
+import { categoryRoutes } from "./modules/category/category.routes";
 
 
 const app : Application = express();
@@ -24,6 +26,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
+app.use("/api/landlord", landlordRoutes)
+app.use("/api/categories", categoryRoutes)
 
 
 
