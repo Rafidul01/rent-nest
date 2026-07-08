@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { landlordService } from "./landload.service";
+import httpStatus from "http-status";
 
 const createProperty = catchAsync(async (req: Request, res: Response, next : NextFunction) => {
     const userId = req.user?.id as string;
@@ -11,7 +12,7 @@ const createProperty = catchAsync(async (req: Request, res: Response, next : Nex
     
     sendResponse(res, {
         success: true,
-        statusCode: 200,
+        statusCode: httpStatus.CREATED,
         message: "Property created successfully",
         data: result
     })

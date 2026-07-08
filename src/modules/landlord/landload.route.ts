@@ -5,6 +5,6 @@ import { landlordController } from "./landload.controller";
 
 const route = Router();
 
-route.post("properties",auth(Role.LANDLORD), landlordController.createProperty)
+route.post("/properties",auth(Role.LANDLORD), landlordController.createProperty)
 
 export const landlordRoutes = route
