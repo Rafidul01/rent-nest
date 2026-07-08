@@ -1,6 +1,5 @@
 import { prisma } from "../../lib/prisma";
 import { IFilterPayload } from "./property.interface";
-import { Prisma } from "../../../generated/prisma/client";
 import { PropertyWhereInput } from "../../../generated/prisma/models";
 
 const getAllPropertiesFromDB = async (filter: IFilterPayload) => {

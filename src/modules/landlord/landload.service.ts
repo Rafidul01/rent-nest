@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
-import { ICreateProperty } from "./landload.interface";
+import { IPropertyPayload } from "./landload.interface";
 
-const createPropertyIntoDB  = async (userId : string, payload : ICreateProperty) => {
+const createPropertyIntoDB  = async (userId : string, payload : IPropertyPayload) => {
 
     const category = await prisma.category.findUnique({
         where : {
@@ -24,6 +24,36 @@ const createPropertyIntoDB  = async (userId : string, payload : ICreateProperty)
     
 }
 
+const updatePropertyIntoDB = async (id : string, landloadId : string, payload : IPropertyPayload) => {
+
+    const property = await prisma.property.findUnique({
+        where : {
+            id
+        }
+    })
+
+    if (!property) {
+        throw new Error("Property not found");
+    }
+
+    if (property.landlordId !== landloadId) {
+        throw new Error("You are not authorized to update this property");
+    }
+
+    const Updatedproperty = await prisma.property.update({
+        where : {
+            id
+        },
+        data : {
+            ...payload
+        }
+    })
+
+    return Updatedproperty
+    
+}
+
 export const landlordService = {
-    createPropertyIntoDB
+    createPropertyIntoDB,
+    updatePropertyIntoDB
 }

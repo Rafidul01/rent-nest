@@ -1,4 +1,4 @@
-export interface ICreateProperty {
+export interface IPropertyPayload {
     title: string;
     description: string;
     address: string;
