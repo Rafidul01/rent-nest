@@ -1,6 +1,55 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
-import { ILoginUser, IUser } from "./auth.interface";
+import { ILoginUser, IRegisterUser, IUser } from "./auth.interface";
+import { jwtUtils } from "../../utils/jwt";
+import config from "../../config";
+import { SignOptions } from "jsonwebtoken";
+
+const registerUserIntoDB = async (payload : IRegisterUser) => {
+    const { name, email, password, phone, role } = payload;
+
+    const isUserExist = await prisma.user.findUnique({
+        where : {
+            email
+        }
+    })
+
+    if (isUserExist) {
+        throw new Error("User already exist");
+    }
+
+    
+
+    if(role && (role !== "LANDLORD" && role !== "TENANT") ){
+        throw new Error("Invalid role, role must be LANDLORD or TENANT");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_value));
+
+    
+
+    const newUser = await prisma.user.create({
+        data : {
+            name,
+            email,
+            password : hashedPassword,
+            phone,
+            role
+        }
+    })
+
+    const user = await prisma.user.findUnique({
+        where : {
+            id : newUser.id
+        },
+        omit : {
+            password : true
+        }
+    })
+
+    return user
+
+}
 
 const loninUser = async (payload : ILoginUser) => {
 
@@ -27,7 +76,29 @@ const loninUser = async (payload : ILoginUser) => {
         throw new Error("Invalid password");
     }
 
-    return user
+    const jwtPayload = {
+        id : user.id,
+        email : user.email,
+        role : user.role,
+        status : user.status,
+    }
+
+    const accessToken = jwtUtils.createToken(
+        jwtPayload,
+        config.jwt.secret,
+        config.jwt.expires_in as SignOptions
+    )
+
+    const refreshToken = jwtUtils.createToken(
+        jwtPayload,
+        config.jwt.refresh_secret,
+        config.jwt.refresh_expires_in as SignOptions
+    )
+
+    return {
+        accessToken,
+        refreshToken 
+    }
 
     
 }
@@ -36,5 +107,6 @@ const loninUser = async (payload : ILoginUser) => {
 
 export const authService = {
     loninUser,
+    registerUserIntoDB
     
 }
