@@ -7,7 +7,9 @@ import { propertyService } from "./property.service";
 
 
 const getAllProperties = catchAsync(async (req: Request, res: Response, next : NextFunction) => {
-    const result = await propertyService.getAllPropertiesFromDB();
+
+    const filter = req.query;
+    const result = await propertyService.getAllPropertiesFromDB(filter);
     
     sendResponse(res, {
         success: true,
@@ -18,7 +20,21 @@ const getAllProperties = catchAsync(async (req: Request, res: Response, next : N
     
 })
 
+const getSingleProperty = catchAsync(async (req: Request, res: Response, next : NextFunction) => {
+    const id = req.params.id as string;
+    const result = await propertyService.getSinglePropertyFromDB(id);
+    
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Property fetched successfully",
+        data: result
+    })
+    
+})
+
 
 export const propertyController = {
-    getAllProperties
+    getAllProperties,
+    getSingleProperty
 }
