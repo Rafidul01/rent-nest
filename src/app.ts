@@ -8,6 +8,7 @@ import { userRoutes } from "./modules/user/user.routes";
 import { landlordRoutes } from "./modules/landlord/landload.route";
 import { categoryRoutes } from "./modules/category/category.routes";
 import { propertyRoutes } from "./modules/property/property.routes";
+import { rentalRoutes } from "./modules/rental/rental.routes";
 
 
 const app : Application = express();
@@ -30,6 +31,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/landlord", landlordRoutes)
 app.use("/api/categories", categoryRoutes)
 app.use("/api/properties", propertyRoutes)
+app.use("/api/rentals", rentalRoutes)
 
 
 
