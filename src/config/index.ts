@@ -17,4 +17,6 @@ export default {
         refresh_expires_in : process.env.JWT_REFRESH_EXPIRES_IN!
     },
     stripe_secret : process.env.STRIPE_SECRET!,
+    stripe_webhook_secret : process.env.STRIPE_WEBHOOK_SECRET!,
+    
 }

@@ -3,6 +3,8 @@ import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
 import { IPaymentPayload } from "./payment.interface";
 import { randomUUID } from "crypto";
+import { handleStripeCheckoutExpired, stripeCheackoutComplit } from "./payment.utils";
+import { Stripe } from "stripe";
 const createPayment = async (id: string, payload: IPaymentPayload) => {
   const { requestId } = payload;
 
@@ -85,7 +87,7 @@ const createPayment = async (id: string, payload: IPaymentPayload) => {
       transactionId: newTransactionId,
       tenantId: id,
       paymentId: payment.id,
-    }
+    },
   });
 
   if (!session) {
@@ -106,6 +108,35 @@ const createPayment = async (id: string, payload: IPaymentPayload) => {
   return { paymentURL, newTransactionId };
 };
 
+const confirmPayment = async (signature: string, payload: Buffer) => {
+  const endpointSecret = config.stripe_webhook_secret;
+
+  const event = stripe.webhooks.constructEvent(
+    payload,
+    signature,
+    endpointSecret,
+  );
+
+  switch (event.type) {
+    case "checkout.session.completed":
+      await stripeCheackoutComplit(
+        event.data.object as Stripe.Checkout.Session,
+      );
+      break;
+
+    case "checkout.session.expired":
+      await handleStripeCheckoutExpired(
+        event.data.object as Stripe.Checkout.Session,
+      );
+      break;
+
+    default:
+      console.log(`Unhandled stripe event type ${event.type}`);
+      break;
+  }
+};
+
 export const paymentService = {
   createPayment,
+  confirmPayment,
 };

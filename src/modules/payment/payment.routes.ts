@@ -5,6 +5,7 @@ import { Role } from "../../../generated/prisma/client";
 
 const router = Router();
 
-router.post("/create",auth(Role.TENANT), paymentController.createPayment);
+router.post("/create",auth(Role.TENANT), paymentController.createPayment)
+router.post("/confirm", paymentController.confirmPayment)
 
 export const paymentRoutes = router;
