@@ -20,9 +20,7 @@ const registerUserIntoDB = async (payload : IRegisterUser) => {
 
     
 
-    if(role && (role !== "LANDLORD" && role !== "TENANT") ){
-        throw new Error("Invalid role, role must be LANDLORD or TENANT");
-    }
+    
 
     const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_value));
 
