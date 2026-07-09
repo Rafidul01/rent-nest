@@ -12,3 +12,8 @@ export interface IPropertyPayload {
     categoryId: string;
     isAvailable?: boolean;
 }
+
+export interface IRentalRequestPayload {
+    status: "APPROVED" | "REJECTED";
+    
+}

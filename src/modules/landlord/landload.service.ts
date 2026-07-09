@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { IPropertyPayload } from "./landload.interface";
+import { IPropertyPayload, IRentalRequestPayload } from "./landload.interface";
 
 const createPropertyIntoDB  = async (userId : string, payload : IPropertyPayload) => {
 
@@ -92,7 +92,7 @@ const getRentalRequestsFromDB = async (landloadId : string) => {
     return rentalRequests
 }
 
-const updateRentalRequestIntoDB = async (id : string, landloadId : string, payload : any) => {
+const updateRentalRequestIntoDB = async (id : string, landloadId : string, payload : IRentalRequestPayload) => {
 
     const {
         status
