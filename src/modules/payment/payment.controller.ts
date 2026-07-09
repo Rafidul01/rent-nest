@@ -37,9 +37,38 @@ const confirmPayment = catchAsync(async(req: Request, res: Response, next : Next
     
 })
 
+const getPaymentHistory = catchAsync(async(req: Request, res: Response, next : NextFunction) => {
+    const id = req.user?.id as string;
+    const result = await paymentService.getPaymentHistory(id);
+    
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Payment history fetched successfully",
+        data: result
+    })
+    
+})
+
+const getSinglePayment = catchAsync(async(req: Request, res: Response, next : NextFunction) => {
+    const id = req.params.id as string;
+    const userId = req.user?.id as string;
+    const result = await paymentService.getSinglePayment(id, userId);
+    
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Payment history fetched successfully",
+        data: result
+    })
+    
+})
+
 export const paymentController = {
     createPayment,
-    confirmPayment
+    confirmPayment,
+    getPaymentHistory,
+    getSinglePayment
 }
 
 

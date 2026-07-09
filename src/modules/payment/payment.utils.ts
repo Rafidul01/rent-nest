@@ -2,7 +2,7 @@ import { Stripe } from "stripe";
 import { prisma } from "../../lib/prisma";
 
 export const stripeCheackoutComplit = async (session: Stripe.Checkout.Session) => {
-    const transactionId = session.metadata?.transactionId;   // fixed
+    const transactionId = session.metadata?.transactionId;   
     if (!transactionId) {
         console.log("no transaction id");
         return;
@@ -48,7 +48,7 @@ const makePayment = async (transactionId: string, session: Stripe.Checkout.Sessi
 };
 
 export const handleStripeCheckoutExpired = async (session: Stripe.Checkout.Session) => {
-    const transactionId = session.metadata?.transactionId;   // fixed here too
+    const transactionId = session.metadata?.transactionId;   
     if (!transactionId) {
         console.log("no transaction id");
         return;

@@ -136,7 +136,46 @@ const confirmPayment = async (signature: string, payload: Buffer) => {
   }
 };
 
+const getPaymentHistory = async (id: string) => {
+  return await prisma.payment.findMany({
+    where: {
+      userId: id,
+    },
+    include: {
+      rentalRequest: true,
+    },
+  });
+  
+};
+
+const getSinglePayment = async (id: string, userId: string) => {
+  const payment = await prisma.payment.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      rentalRequest: true,
+    },
+  });
+  if (!payment) {
+    throw new Error("Payment not found");
+  }
+  if (payment.userId !== userId) {
+    throw new Error("You are not authorized to view this payment");
+  }
+  return await prisma.payment.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      rentalRequest: true,
+    },
+  })
+};
+
 export const paymentService = {
   createPayment,
   confirmPayment,
+  getPaymentHistory,
+  getSinglePayment
 };
