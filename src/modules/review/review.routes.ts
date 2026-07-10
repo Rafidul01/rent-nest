@@ -8,6 +8,7 @@ import { Role } from "../../../generated/prisma/browser";
 const router = Router();
 
 router.post("/",auth(Role.TENANT),validateRequest(reviewValidation.reviewValidationSchema) ,reviewController.createReview)
+router.get("/", reviewController.getAllReviews)
 
 
 export const reviewRoutes = router;

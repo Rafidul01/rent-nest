@@ -43,6 +43,17 @@ const createReviewIntoDB = async (tenantId : string,payload : IReviewPayload) =>
     return review
 }
 
+const getAllReviewsFromDB = async () => {
+
+    const reviews = await prisma.review.findMany()
+
+    if (reviews.length === 0) {
+        throw new AppError(httpStatus.NOT_FOUND, "Reviews not found");
+    }
+
+    return reviews
+}
 export const reviewService = {
-    createReviewIntoDB
+    createReviewIntoDB,
+    getAllReviewsFromDB
 }
