@@ -1,5 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { IRentalRequestPayload } from "./rental.interface";
+import { AppError } from "../../utils/AppError";
+import httpStatus from "http-status";
 
 const createRentalRequestIntoDB = async (tenantId: string, payload: IRentalRequestPayload) => {
     const { propertyId, moveInDate, duration, message } = payload;
@@ -9,15 +11,15 @@ const createRentalRequestIntoDB = async (tenantId: string, payload: IRentalReque
     });
 
     if (!property) {
-        throw new Error("Property not found");
+        throw new AppError(httpStatus.NOT_FOUND, "Property not found");
     }
 
     if (!property.isAvailable) {
-        throw new Error("This property is not currently available for rent");
+        throw new AppError(httpStatus.NOT_FOUND, "Property is not available");
     }
 
     if (property.landlordId === tenantId) {
-        throw new Error("You cannot submit a rental request for your own property");
+        throw new AppError(httpStatus.NOT_FOUND, "You cannot rent your own property");
     }
 
     const totalAmount = property.price * duration;
@@ -43,6 +45,11 @@ const getRentalRequestsFromDB = async (tenantId: string) => {
             tenantId
         }
     });
+
+    if (rentalRequests.length === 0) {
+        throw new AppError(httpStatus.NOT_FOUND, "Rental requests not found");
+        
+    }
     return rentalRequests;
 };
 
@@ -59,7 +66,7 @@ const getSingleRentalRequestFromDB = async (id: string, tenantId: string) => {
         }
     });
     if (rentalRequest?.tenantId !== tenantId) {
-        throw new Error("You are not authorized to view this rental request");
+        throw new AppError(httpStatus.NOT_FOUND, "You are not authorized to view this rental request");
     }
     return rentalRequest;
 };

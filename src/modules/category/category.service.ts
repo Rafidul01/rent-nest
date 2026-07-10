@@ -1,5 +1,7 @@
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../utils/AppError";
 import { ICreateCategory } from "./category.interface";
+import httpStatus from "http-status";
 
 
 const createCategoryIntoDB = async (payload : ICreateCategory) => {
@@ -10,7 +12,9 @@ const createCategoryIntoDB = async (payload : ICreateCategory) => {
         }
     })
     if (isCategoryExist) {
-        throw new Error("Category already exist");
+        throw new AppError(httpStatus.CONFLICT, "Category already exist",{
+            message : "Category already exist"
+        });
     }
 
     const category = await prisma.category.create({
@@ -26,6 +30,10 @@ const createCategoryIntoDB = async (payload : ICreateCategory) => {
 
 const getAllCategoriesFromDB = async () => {
     const categories = await prisma.category.findMany();
+
+    if (!categories) {
+        throw new AppError(httpStatus.NOT_FOUND, "Categories not found");
+    }
     return categories;
 }
 

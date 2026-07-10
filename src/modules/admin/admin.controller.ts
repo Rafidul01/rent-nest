@@ -32,7 +32,20 @@ const updateUser = catchAsync(async(req: Request, res: Response, next : NextFunc
     })
 })
 
+const getRentalRequests = catchAsync(async(req: Request, res: Response, next : NextFunction) => {
+    const result = await adminService.getRentalRequestsFromDB();
+    
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Rental requests fetched successfully",
+        data: result
+    })
+    
+})
+
 export const adminController = {
     getAllUsers,
-    updateUser
+    updateUser,
+    getRentalRequests
 }

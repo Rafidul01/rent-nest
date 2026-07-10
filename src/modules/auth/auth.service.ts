@@ -4,6 +4,9 @@ import { ILoginUser, IRegisterUser, IUser } from "./auth.interface";
 import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
 import { SignOptions } from "jsonwebtoken";
+import httpStatus from "http-status";
+import { AppError } from "../../utils/AppError";
+
 
 const registerUserIntoDB = async (payload : IRegisterUser) => {
     const { name, email, password, phone, role } = payload;
@@ -15,12 +18,9 @@ const registerUserIntoDB = async (payload : IRegisterUser) => {
     })
 
     if (isUserExist) {
-        throw new Error("User already exist");
+        throw new AppError(httpStatus.CONFLICT, "User already exist");
     }
 
-    
-
-    
 
     const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_value));
 
@@ -61,7 +61,7 @@ const loninUser = async (payload : ILoginUser) => {
     })
 
     if (!user) {
-        throw new Error("Invalid email or password");
+        throw new AppError(httpStatus.NOT_FOUND, "User not found");
     }
 
     if(user?.status === "BANNED"){
@@ -71,7 +71,7 @@ const loninUser = async (payload : ILoginUser) => {
     const isPasswordMatched = await bcrypt.compare(password, user.password);
 
     if(!isPasswordMatched){
-        throw new Error("Invalid password");
+        throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password");
     }
 
     const jwtPayload = {
@@ -110,6 +110,9 @@ const getCurrentUserFormDB = async (id : string) => {
             password : true
         }
     })
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "User not found"); 
+    }
     return user;
 }
 

@@ -1,6 +1,8 @@
 import { prisma } from "../../lib/prisma";
 import { IFilterPayload } from "./property.interface";
 import { PropertyWhereInput } from "../../../generated/prisma/models";
+import { AppError } from "../../utils/AppError";
+import httpStatus from "http-status";
 
 const getAllPropertiesFromDB = async (filter: IFilterPayload) => {
     const { city, minPrice, maxPrice, categoryId } = filter;
@@ -51,6 +53,15 @@ const getAllPropertiesFromDB = async (filter: IFilterPayload) => {
         }
     });
 
+    console.log(properties)
+
+    if (properties.length === 0) {
+        throw new AppError(httpStatus.NOT_FOUND, "Properties not found",{
+            massage : "please recheck your filter",
+            filter});
+    }
+    
+
     return properties;
 };
 
@@ -66,6 +77,13 @@ const getSinglePropertyFromDB = async (id: string) => {
             }
         }
     });
+
+    if (!property) {
+        throw new AppError(httpStatus.NOT_FOUND, "Property not found",{
+            massage : "please recheck your property id",
+            propertyId : id
+        });  
+    }
     return property;
 };
 

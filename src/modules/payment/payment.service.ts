@@ -5,6 +5,8 @@ import { IPaymentPayload } from "./payment.interface";
 import { randomUUID } from "crypto";
 import { handleStripeCheckoutExpired, stripeCheackoutComplit } from "./payment.utils";
 import { Stripe } from "stripe";
+import { AppError } from "../../utils/AppError";
+import httpStatus from "http-status";
 const createPayment = async (id: string, payload: IPaymentPayload) => {
   const { requestId } = payload;
 
@@ -158,10 +160,16 @@ const getSinglePayment = async (id: string, userId: string) => {
     },
   });
   if (!payment) {
-    throw new Error("Payment not found");
+    throw new AppError(httpStatus.NOT_FOUND, "Payment not found",{
+      massage : "please recheck your payment id",
+      paymentId : id
+    });
   }
   if (payment.userId !== userId) {
-    throw new Error("You are not authorized to view this payment");
+    throw new AppError(httpStatus.NOT_FOUND, "You are not authorized to view this payment",{
+      massage : "please recheck your payment id",
+      paymentId : id
+    });
   }
   return await prisma.payment.findUnique({
     where: {

@@ -9,6 +9,7 @@ const router = Router();
 
 router.get("/users",auth(Role.ADMIN), adminController.getAllUsers)
 router.patch("/users/:id",auth(Role.ADMIN), validateRequest(adminValidation.userUpdateValidationSchema), adminController.updateUser)
+router.get("/rentals", auth(Role.ADMIN), adminController.getRentalRequests)
 
 
 export const adminRoutes = router;
