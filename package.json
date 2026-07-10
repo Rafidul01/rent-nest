@@ -8,9 +8,9 @@
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
     "start": "node dist/server.js",
-    "stripe:webhook": "stripe listen --forward-to http://localhost:3000/api/payments/confirm",
+    "build": "prisma generate && tsup",
+    "stripe:webhook": "stripe listen --forward-to https://rent-nest-three-blue.vercel.app/api/payments/confirm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.22.0",
     "stripe": "^22.3.0",
+    "tsup": "^8.5.1",
     "zod": "^4.4.3"
   }
 }
