@@ -17,13 +17,13 @@ const createPayment = async (id: string, payload: IPaymentPayload) => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
   if (user.status === "BANNED") {
-    throw new Error("User is banned");
+    throw new AppError(httpStatus.FORBIDDEN, "User is banned");
   }
   if (user.role !== "TENANT") {
-    throw new Error("Only tenants can make payments");
+    throw new AppError(httpStatus.FORBIDDEN, "User is not a tenant");
   }
 
   const rentalRequest = await prisma.rentalRequest.findUnique({
@@ -33,16 +33,14 @@ const createPayment = async (id: string, payload: IPaymentPayload) => {
   });
 
   if (!rentalRequest) {
-    throw new Error("Rental request not found");
+    throw new AppError(httpStatus.NOT_FOUND, "Rental request not found");
   }
 
   if (rentalRequest.tenantId !== id) {
-    throw new Error(
-      "You are not authorized to make payments for this rental request",
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "You are not authorized to create a payment for this rental request");
   }
   if (rentalRequest.status !== "APPROVED") {
-    throw new Error("Rental request is not approved");
+    throw new AppError(httpStatus.NOT_FOUND, "Rental request is not approved");
   }
 
   const newTransactionId = `RENTNEXT-${randomUUID()}`;
